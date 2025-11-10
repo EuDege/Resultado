@@ -17,7 +17,7 @@
       transition: background-color 0.25s, color 0.25s;
     }
 
-    #capture-area { /* capture-area deve ter position:relative para watermark absolute funcionar */
+    #capture-area { 
       position: relative;
     }
 
@@ -126,7 +126,6 @@
 
     .hide-during-screenshot{ display:none !important }
 
-    /* marca d'água — estilo padrão, sobreposto no container durante screenshot */
     .wd-watermark {
       position: absolute;
       right: 10px;
@@ -144,7 +143,6 @@
     <div class="result-container" id="results-container">
       <h1 contenteditable="true" id="editable-title">Resultado de [seu nome aqui]</h1>
       <div id="results"></div>
-      <!-- watermark será inserida aqui dinamicamente antes do screenshot -->
     </div>
   </div>
 
@@ -195,7 +193,7 @@
     const bgImageInput = document.getElementById('bgImageInput');
     const removeImageBtn = document.getElementById('removeImage');
 
-    // defaults
+    // DEFAULTS
     const DEFAULT = {
       title: 'Resultado de [seu nome aqui]',
       colors: {
@@ -207,7 +205,6 @@
       }
     };
 
-    /* ---------------- helpers ---------------- */
     function createLine(percent = '0%', name = 'Item') {
       const div = document.createElement('div');
       div.className = 'result';
@@ -218,7 +215,7 @@
         <button class="remove-btn" title="Remover linha">×</button>
       `;
       resultsEl.appendChild(div);
-      updateBars(); // immediate
+      updateBars(); 
     }
 
     function updateBars() {
@@ -229,13 +226,12 @@
         if (isNaN(val)) val = 0;
         val = Math.max(0, Math.min(100, val));
         fill.style.width = val + '%';
-        // color rules
         if (val > 80) fill.style.backgroundColor = 'limegreen';
         else if (val > 60) fill.style.backgroundColor = 'yellowgreen';
         else if (val > 40) fill.style.backgroundColor = 'orange';
         else if (val > 20) fill.style.backgroundColor = 'orangered';
         else fill.style.backgroundColor = 'red';
-        percentEl.textContent = val + '%'; // normalize
+        percentEl.textContent = val + '%'; 
       });
     }
 
@@ -339,7 +335,6 @@
       return '#' + [m[1],m[2],m[3]].map(n => parseInt(n).toString(16).padStart(2,'0')).join('');
     }
 
-    /* ---------------- generation buttons ---------------- */
     document.getElementById('randomize').addEventListener('click', () => {
       document.querySelectorAll('.result').forEach(r => {
         const rnd = Math.floor(Math.random()*101);
@@ -379,14 +374,12 @@
       saveData();
     });
 
-    /* ---------------- image chooser ---------------- */
     bgImageInput.addEventListener('change', (ev) => {
       const f = ev.target.files && ev.target.files[0];
       if (!f) return;
       const reader = new FileReader();
       reader.onload = e => {
         const dataUrl = e.target.result;
-        // apply as background and store in dataset
         resultsContainer.style.backgroundImage = `url('${dataUrl}')`;
         resultsContainer.dataset.bgImage = dataUrl;
         saveData();
@@ -401,7 +394,6 @@
       saveData();
     });
 
-    /* ---------------- add/remove/edit interactions ---------------- */
     document.getElementById('addLine').addEventListener('click', () => {
       createLine('0%','Novo item');
       saveData();
@@ -420,7 +412,6 @@
       }
     });
 
-    /* ---------------- color controls ---------------- */
     bgColorInput.addEventListener('input', e => {
       document.body.style.backgroundColor = e.target.value;
       saveData();
@@ -438,9 +429,7 @@
       saveData();
     });
 
-    /* ---------------- resets ---------------- */
     document.getElementById('resetData').addEventListener('click', () => {
-      // keep colors currently set (read from inputs)
       const saved = JSON.parse(localStorage.getItem('degeneradoData') || '{}');
       const colors = saved.colors || {
         bg: bgColorInput.value || DEFAULT.colors.bg,
@@ -456,7 +445,6 @@
     });
 
     document.getElementById('resetColors').addEventListener('click', () => {
-      // reset only colors, keep lines/title
       const raw = JSON.parse(localStorage.getItem('degeneradoData') || '{}');
       raw.colors = DEFAULT.colors;
       localStorage.setItem('degeneradoData', JSON.stringify(raw));
@@ -468,21 +456,14 @@
       loadData();
     });
 
-    /* ---------------- download (fix background black & watermark) ---------------- */
     document.getElementById('download').addEventListener('click', async () => {
-      // hide controls during capture
       document.querySelectorAll('.buttons, .remove-btn, .color-controls').forEach(el => el.classList.add('hide-during-screenshot'));
 
-      // create watermark element inside resultsContainer so it will be captured
       const wm = document.createElement('div');
       wm.className = 'wd-watermark';
       wm.textContent = 'Feito no site do DEGE :3';
       resultsContainer.appendChild(wm);
 
-      // html2canvas options:
-      // - useCORS true: allow cross-origin images when possible
-      // - backgroundColor null: keep actual background (not force black)
-      // - scale 2: higher resolution screenshot
       try {
         const canvas = await html2canvas(document.getElementById('capture-area'), {
           useCORS: true,
@@ -498,15 +479,12 @@
         console.error('Erro ao gerar imagem:', err);
         alert('Falha ao gerar imagem. Se você usou imagem de fundo muito grande, tente usar uma menor.');
       } finally {
-        // cleanup watermark and unhide
         wm.remove();
         document.querySelectorAll('.buttons, .remove-btn, .color-controls').forEach(el => el.classList.remove('hide-during-screenshot'));
       }
     });
 
-    // init
     loadData();
-    // sync inputs after paint
     setTimeout(syncColorInputs, 120);
   </script>
 </body>
