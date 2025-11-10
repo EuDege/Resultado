@@ -4,8 +4,13 @@
   <meta charset="UTF-8" />
   <title>Resultado</title>
   <style>
-    :root{--bg:#111;--container-rgba:rgba(0,0,0,0.6);--text:#fff;--title:#eee}
-    html,body{height:100%}
+    :root {
+      --bg: #111;
+      --container-rgba: rgba(0, 0, 0, 0.6);
+      --text: #fff;
+      --title: #eee;
+    }
+    html, body { height: 100% }
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -13,13 +18,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 10px;
+      padding: 30px 10px 100px;
       transition: background-color 0.25s, color 0.25s;
     }
 
-    #capture-area { 
-      position: relative;
-    }
+    #capture-area { position: relative; }
 
     .result-container {
       width: 500px;
@@ -27,7 +30,6 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(0,0,0,0.8);
-      transition: background-color 0.3s, background-image 0.3s;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -55,7 +57,6 @@
     .percent {
       min-width: 60px;
       text-align: right;
-      margin-right: 4px;
       font-weight: bold;
       cursor: text;
     }
@@ -66,7 +67,6 @@
       background-color: rgba(0,0,0,0.35);
       border-radius: 4px;
       overflow: hidden;
-      margin-right: 4px;
     }
 
     .fill {
@@ -94,7 +94,38 @@
       font-weight: bold;
       padding: 0 6px;
     }
-    .remove-btn:hover{ color:#ff7777 }
+    .remove-btn:hover { color: #ff7777 }
+
+    .section {
+      background: #1b1b1b;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 15px;
+      width: 520px;
+    }
+
+    .section h2 {
+      font-size: 15px;
+      color: #ccc;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .font-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .font-controls label {
+      font-size: 13px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
     .buttons {
       display: flex;
@@ -111,20 +142,24 @@
       padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
       font-size: 13px;
     }
-    .buttons button:hover, .buttons label:hover{background:#333}
+    .buttons button:hover { background: #333 }
 
-    input[type="file"]{ display:none }
+    input[type="file"] { display: none }
+    input[type="color"] { width: 36px; height: 26px; padding: 0; border: none; }
 
-    .color-controls { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; justify-content:center }
-    .color-controls label{ font-size:13px; color:#ccc; display:inline-flex; align-items:center; gap:8px }
-    .color-controls input[type="color"]{ width:36px; height:26px; padding:0; border:none }
-
-    .hide-during-screenshot{ display:none !important }
+    #download {
+      background: #1ed760;
+      font-weight: bold;
+      color: #000;
+      border: none;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      margin-top: 25px;
+    }
+    #download:hover { background: #29f07d }
 
     .wd-watermark {
       position: absolute;
@@ -136,12 +171,14 @@
       pointer-events: none;
       text-shadow: 0 1px 0 rgba(0,0,0,0.6);
     }
+
+    .hide-during-screenshot { display: none !important }
   </style>
 </head>
 <body>
   <div id="capture-area">
     <div class="result-container" id="results-container">
-      <h1 contenteditable="true" id="editable-title">Resultado de [seu nome aqui]</h1>
+      <h1 contenteditable="true" id="editable-title">Resultado de [seu nick]</h1>
       <div id="results"></div>
     </div>
   </div>
@@ -151,361 +188,265 @@
     <button id="resetData">Resetar informações</button>
     <button id="resetColors">Resetar cores</button>
     <button id="resetAll">Resetar tudo</button>
-    <button id="download">Baixar imagem</button>
-  </div>
-
-  <div class="buttons">
-    <button id="randomize">Gerar aleatórios</button>
-    <button id="ascending">Gerar crescente</button>
-    <button id="descending">Gerar decrescente</button>
+    <button id="randomize">Aleatórios</button>
+    <button id="ascending">Crescente</button>
+    <button id="descending">Decrescente</button>
     <button id="shuffleNames">Embaralhar nomes</button>
-  </div>
-
-  <div class="buttons" style="margin-top:8px">
     <label for="bgImageInput">Escolher imagem</label>
     <input id="bgImageInput" type="file" accept="image/*">
     <button id="removeImage">Remover imagem</button>
   </div>
 
-  <div class="color-controls" style="margin-top:12px">
-    <label>Fundo <input id="bgColor" type="color" value="#111111"></label>
-    <label>Container <input id="containerColor" type="color" value="#000000"></label>
-    <label>Texto <input id="textColor" type="color" value="#ffffff"></label>
-    <label>Título <input id="titleColor" type="color" value="#eeeeee"></label>
+  <!-- Cores principais -->
+  <div class="section">
+    <h2>Alterar Cores</h2>
+    <div class="font-controls">
+      <label>Fundo <input type="color" id="bgColor" value="#111111"></label>
+      <label>Container <input type="color" id="containerColor" value="#000000"></label>
+      <label>Título <input type="color" id="titleColor" value="#eeeeee"></label>
+      <label>Texto <input type="color" id="textColor" value="#ffffff"></label>
+    </div>
   </div>
 
-  <small style="display:block; text-align:center; color:#aaa; margin-top:10px">
-    Observação: imagens muito grandes podem exceder o limite do localStorage (~5MB). Use imagens otimizadas.
-  </small>
+  <!-- Controles de fonte do título -->
+  <div class="section">
+    <h2>Editar Título</h2>
+    <div class="font-controls">
+      <label>Fonte
+        <select id="titleFont">
+          <option value="Arial">Arial</option>
+          <option value="Verdana">Verdana</option>
+          <option value="'Times New Roman'">Times New Roman</option>
+          <option value="Impact">Impact</option>
+          <option value="Comic Sans MS">Comic Sans</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="titleBold"> Negrito</label>
+      <label><input type="checkbox" id="titleItalic"> Itálico</label>
+      <label>Sombra <input type="color" id="titleShadowColor" value="#000000"></label>
+    </div>
+  </div>
+
+  <!-- Controles de fonte dos inputs -->
+  <div class="section">
+    <h2>Editar Inputs</h2>
+    <div class="font-controls">
+      <label>Fonte
+        <select id="inputFont">
+          <option value="Arial">Arial</option>
+          <option value="Verdana">Verdana</option>
+          <option value="'Times New Roman'">Times New Roman</option>
+          <option value="Impact">Impact</option>
+          <option value="Comic Sans MS">Comic Sans</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="inputBold"> Negrito</label>
+      <label><input type="checkbox" id="inputItalic"> Itálico</label>
+      <label>Sombra <input type="color" id="inputShadowColor" value="#000000"></label>
+    </div>
+  </div>
+
+  <button id="download">Baixar imagem</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
-    // ELEMENTS
     const resultsEl = document.getElementById('results');
     const titleEl = document.getElementById('editable-title');
     const resultsContainer = document.getElementById('results-container');
 
-    const bgColorInput = document.getElementById('bgColor');
-    const containerColorInput = document.getElementById('containerColor');
-    const textColorInput = document.getElementById('textColor');
-    const titleColorInput = document.getElementById('titleColor');
+    const bgColor = document.getElementById('bgColor');
+    const containerColor = document.getElementById('containerColor');
+    const titleColor = document.getElementById('titleColor');
+    const textColor = document.getElementById('textColor');
 
-    const bgImageInput = document.getElementById('bgImageInput');
-    const removeImageBtn = document.getElementById('removeImage');
+    const titleFontSel = document.getElementById('titleFont');
+    const titleBold = document.getElementById('titleBold');
+    const titleItalic = document.getElementById('titleItalic');
+    const titleShadow = document.getElementById('titleShadowColor');
 
-    // DEFAULTS
+    const inputFontSel = document.getElementById('inputFont');
+    const inputBold = document.getElementById('inputBold');
+    const inputItalic = document.getElementById('inputItalic');
+    const inputShadow = document.getElementById('inputShadowColor');
+
     const DEFAULT = {
-      title: 'Resultado de [seu nome aqui]',
-      colors: {
-        bg: '#111111',
-        container: 'rgba(0,0,0,0.6)',
-        text: '#ffffff',
-        title: '#eeeeee',
-        backgroundImage: null
-      }
+      title: 'Resultado de [seu nick]',
+      lines: Array.from({length:10}, (_,i)=>({
+        percent:`${(i+1)*10}%`,
+        name:`Item ${i+1}`
+      }))
     };
 
-    function createLine(percent = '0%', name = 'Item') {
-      const div = document.createElement('div');
-      div.className = 'result';
-      div.innerHTML = `
+    function createLine(percent='0%', name='Item'){
+      const div=document.createElement('div');
+      div.className='result';
+      div.innerHTML=`
         <div class="percent" contenteditable="true">${percent}</div>
         <div class="bar"><div class="fill"></div></div>
         <div class="name" contenteditable="true">${name}</div>
-        <button class="remove-btn" title="Remover linha">×</button>
+        <button class="remove-btn">×</button>
       `;
       resultsEl.appendChild(div);
-      updateBars(); 
-    }
-
-    function updateBars() {
-      document.querySelectorAll('.result').forEach(r => {
-        const percentEl = r.querySelector('.percent');
-        const fill = r.querySelector('.fill');
-        let val = parseInt((percentEl.textContent || '').replace('%',''), 10);
-        if (isNaN(val)) val = 0;
-        val = Math.max(0, Math.min(100, val));
-        fill.style.width = val + '%';
-        if (val > 80) fill.style.backgroundColor = 'limegreen';
-        else if (val > 60) fill.style.backgroundColor = 'yellowgreen';
-        else if (val > 40) fill.style.backgroundColor = 'orange';
-        else if (val > 20) fill.style.backgroundColor = 'orangered';
-        else fill.style.backgroundColor = 'red';
-        percentEl.textContent = val + '%'; 
-      });
-    }
-
-    function saveData() {
-      const data = {
-        title: titleEl.textContent || DEFAULT.title,
-        lines: [],
-        colors: {
-          bg: bgColorInput.value || DEFAULT.colors.bg,
-          container: containerColorInput.value || DEFAULT.colors.container,
-          text: textColorInput.value || DEFAULT.colors.text,
-          title: titleColorInput.value || DEFAULT.colors.title,
-          backgroundImage: resultsContainer.dataset.bgImage || null
-        }
-      };
-      document.querySelectorAll('.result').forEach(r => {
-        data.lines.push({
-          percent: r.querySelector('.percent').textContent || '0%',
-          name: r.querySelector('.name').textContent || ''
-        });
-      });
-      try {
-        localStorage.setItem('degeneradoData', JSON.stringify(data));
-      } catch (err) {
-        // storage fail (imagem muito grande). fallback: remove image and retry save
-        console.warn('localStorage.setItem falhou (tamanho?). salvando sem imagem.', err);
-        data.colors.backgroundImage = null;
-        delete resultsContainer.dataset.bgImage;
-        resultsContainer.style.backgroundImage = '';
-        localStorage.setItem('degeneradoData', JSON.stringify(data));
-      }
-    }
-
-    function loadData() {
-      const raw = localStorage.getItem('degeneradoData');
-      resultsEl.innerHTML = '';
-      if (!raw) {
-        // first time
-        titleEl.textContent = DEFAULT.title;
-        for (let i=1;i<=10;i++) createLine('0%','Item '+i);
-        applyColors(DEFAULT.colors);
-        syncColorInputs();
-        saveData();
-        return;
-      }
-      try {
-        const data = JSON.parse(raw);
-        titleEl.textContent = data.title || DEFAULT.title;
-        const lines = Array.isArray(data.lines) && data.lines.length ? data.lines : Array.from({length:10},(_,i)=>({percent:'0%',name:`Item ${i+1}`}));
-        lines.forEach(l => createLine(l.percent ?? '0%', l.name ?? ''));
-        // colors
-        const colors = data.colors || DEFAULT.colors;
-        applyColors(colors);
-        // backgroundImage handling
-        if (colors.backgroundImage) {
-          resultsContainer.style.backgroundImage = `url('${colors.backgroundImage}')`;
-          resultsContainer.dataset.bgImage = colors.backgroundImage;
-        } else {
-          resultsContainer.style.backgroundImage = '';
-          delete resultsContainer.dataset.bgImage;
-        }
-        syncColorInputs();
-      } catch (err) {
-        console.error('Erro carregando dados:', err);
-        localStorage.removeItem('degeneradoData');
-        loadData();
-      }
       updateBars();
     }
 
-    function applyColors(colors) {
-      document.body.style.backgroundColor = colors.bg ?? DEFAULT.colors.bg;
-      resultsContainer.style.backgroundColor = colors.container ?? DEFAULT.colors.container;
-      document.body.style.color = colors.text ?? DEFAULT.colors.text;
-      titleEl.style.color = colors.title ?? DEFAULT.colors.title;
-      if (colors.backgroundImage) {
-        resultsContainer.style.backgroundImage = `url('${colors.backgroundImage}')`;
-        resultsContainer.dataset.bgImage = colors.backgroundImage;
-      } else {
-        resultsContainer.style.backgroundImage = '';
-        delete resultsContainer.dataset.bgImage;
-      }
-    }
-
-    function syncColorInputs() {
-      // safe conversion: try computedStyle then fallback to defaults
-      const bodyBg = getComputedStyle(document.body).backgroundColor;
-      const contBg = getComputedStyle(resultsContainer).backgroundColor;
-      const txt = getComputedStyle(document.body).color;
-      const ttl = getComputedStyle(titleEl).color;
-      bgColorInput.value = rgbToHex(bodyBg) || DEFAULT.colors.bg;
-      containerColorInput.value = rgbToHex(contBg) || '#000000';
-      textColorInput.value = rgbToHex(txt) || DEFAULT.colors.text;
-      titleColorInput.value = rgbToHex(ttl) || DEFAULT.colors.title;
-    }
-
-    function rgbToHex(rgb) {
-      if (!rgb) return null;
-      const m = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-      if (!m) return null;
-      return '#' + [m[1],m[2],m[3]].map(n => parseInt(n).toString(16).padStart(2,'0')).join('');
-    }
-
-    document.getElementById('randomize').addEventListener('click', () => {
-      document.querySelectorAll('.result').forEach(r => {
-        const rnd = Math.floor(Math.random()*101);
-        r.querySelector('.percent').textContent = rnd + '%';
+    function updateBars(){
+      document.querySelectorAll('.result').forEach(r=>{
+        const p=r.querySelector('.percent');
+        const fill=r.querySelector('.fill');
+        let val=parseInt(p.textContent.replace('%',''))||0;
+        val=Math.max(0,Math.min(100,val));
+        fill.style.width=val+'%';
+        fill.style.background= val>80?'limegreen':val>60?'yellowgreen':val>40?'orange':val>20?'orangered':'red';
+        p.textContent=val+'%';
       });
-      updateBars(); saveData();
-    });
-
-    function genRandomArray(length){
-      const arr = Array.from({length},()=>Math.floor(Math.random()*101));
-      return arr;
     }
 
-    document.getElementById('ascending').addEventListener('click', () => {
-      const items = Array.from(document.querySelectorAll('.result'));
-      const vals = genRandomArray(items.length).sort((a,b)=>a-b);
-      items.forEach((r,i)=> r.querySelector('.percent').textContent = vals[i] + '%');
-      updateBars(); saveData();
-    });
-
-    document.getElementById('descending').addEventListener('click', () => {
-      const items = Array.from(document.querySelectorAll('.result'));
-      const vals = genRandomArray(items.length).sort((a,b)=>b-a);
-      items.forEach((r,i)=> r.querySelector('.percent').textContent = vals[i] + '%');
-      updateBars(); saveData();
-    });
-
-    document.getElementById('shuffleNames').addEventListener('click', () => {
-      const nameEls = Array.from(document.querySelectorAll('.name'));
-      const names = nameEls.map(n=>n.textContent);
-      // Fisher-Yates
-      for (let i=names.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [names[i],names[j]] = [names[j],names[i]];
-      }
-      nameEls.forEach((el,i)=> el.textContent = names[i]);
-      saveData();
-    });
-
-    bgImageInput.addEventListener('change', (ev) => {
-      const f = ev.target.files && ev.target.files[0];
-      if (!f) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const dataUrl = e.target.result;
-        resultsContainer.style.backgroundImage = `url('${dataUrl}')`;
-        resultsContainer.dataset.bgImage = dataUrl;
-        saveData();
+    function saveData(){
+      const data={
+        title:titleEl.textContent,
+        lines:[...document.querySelectorAll('.result')].map(r=>({
+          percent:r.querySelector('.percent').textContent,
+          name:r.querySelector('.name').textContent
+        })),
+        bg:bgColor.value,
+        container:containerColor.value,
+        titleColor:titleColor.value,
+        textColor:textColor.value
       };
-      reader.readAsDataURL(f);
-      ev.target.value = '';
-    });
+      localStorage.setItem('degeneradoData',JSON.stringify(data));
+    }
 
-    removeImageBtn.addEventListener('click', () => {
-      resultsContainer.style.backgroundImage = '';
-      delete resultsContainer.dataset.bgImage;
-      saveData();
-    });
+    function loadData(){
+      resultsEl.innerHTML='';
+      const raw=localStorage.getItem('degeneradoData');
+      let data;
+      try{data=raw?JSON.parse(raw):DEFAULT}catch{data=DEFAULT}
+      titleEl.textContent=data.title||DEFAULT.title;
+      (data.lines||DEFAULT.lines).forEach(l=>createLine(l.percent,l.name));
 
-    document.getElementById('addLine').addEventListener('click', () => {
-      createLine('0%','Novo item');
-      saveData();
-    });
+      bgColor.value=data.bg||"#111111";
+      containerColor.value=data.container||"#000000";
+      titleColor.value=data.titleColor||"#eeeeee";
+      textColor.value=data.textColor||"#ffffff";
 
-    document.body.addEventListener('click', e => {
-      if (e.target.classList.contains('remove-btn')) {
-        e.target.closest('.result').remove();
-        updateBars(); saveData();
-      }
-    });
+      document.body.style.backgroundColor=bgColor.value;
+      resultsContainer.style.backgroundColor=containerColor.value;
+      titleEl.style.color=titleColor.value;
+      document.querySelectorAll('.name,.percent').forEach(e=>e.style.color=textColor.value);
 
-    document.body.addEventListener('input', e => {
-      if (e.target.classList.contains('percent') || e.target.classList.contains('name') || e.target === titleEl) {
-        updateBars(); saveData();
-      }
-    });
-
-    bgColorInput.addEventListener('input', e => {
-      document.body.style.backgroundColor = e.target.value;
-      saveData();
-    });
-    containerColorInput.addEventListener('input', e => {
-      resultsContainer.style.backgroundColor = e.target.value;
-      saveData();
-    });
-    textColorInput.addEventListener('input', e => {
-      document.body.style.color = e.target.value;
-      saveData();
-    });
-    titleColorInput.addEventListener('input', e => {
-      titleEl.style.color = e.target.value;
-      saveData();
-    });
-
-    document.getElementById('resetData').addEventListener('click', () => {
-      const saved = JSON.parse(localStorage.getItem('degeneradoData') || '{}');
-      const colors = saved.colors || {
-        bg: bgColorInput.value || DEFAULT.colors.bg,
-        container: containerColorInput.value || DEFAULT.colors.container,
-        text: textColorInput.value || DEFAULT.colors.text,
-        title: titleColorInput.value || DEFAULT.colors.title,
-        backgroundImage: resultsContainer.dataset.bgImage || null
-      };
-      const data = { title: DEFAULT.title, colors, lines: [] };
-      for (let i=1;i<=10;i++) data.lines.push({ percent:'0%', name:`Item ${i}`});
-      localStorage.setItem('degeneradoData', JSON.stringify(data));
-      loadData();
-    });
-
-    document.getElementById('resetColors').addEventListener('click', () => {
-      const raw = JSON.parse(localStorage.getItem('degeneradoData') || '{}');
-      raw.colors = DEFAULT.colors;
-      localStorage.setItem('degeneradoData', JSON.stringify(raw));
-      applyColors(DEFAULT.colors); syncColorInputs(); saveData();
-    });
-
-    document.getElementById('resetAll').addEventListener('click', () => {
-      localStorage.removeItem('degeneradoData');
-      loadData();
-    });
+      updateBars();
+    }
 
     /*
-
-                                      █▀▀▄░░░░░░░░░░░▄▀▀█
-                                     ░█░░░▀▄░▄▄▄▄▄░▄▀░░░█
-                                     ░░▀▄░░░▀░░░░░▀░░░▄▀
-                                     ░░░░▌░▄▄░░░▄▄░▐▀▀
-                                     ░░░▐░░█▄░░░▄█░░▌▄▄▀▀▀▀█
-                                     ░░░▌▄▄▀▀░▄░▀▀▄▄▐░░░░░░█   OI, CURIOSO.
-                                     ▄▀▀▐▀▀░▄▄▄▄▄░▀▀▌▄▄▄░░░     MANDA SALVE.
-                                     █░░░▀▄░█░░░█░▄▀░░░░█▀▀▀      TAMO JUNTO. 
-                                     ░▀▄░░▀░░▀▀▀░░▀░░░▄█▀              BY: DEGE <3
-                                     ░░░█░░░░░░░░░░░▄▀▄░▀▄
-                                     ░░░█░░░░░░░░░▄▀█░░█░░█
-                                     ░░░█░░░░░░░░░░░█▄█░░▄▀
-                                     ░░░█░░░░░░░░░░░████▀
-                                     ░░░▀▄▄▀▀▄▄▀▀▄▄▄█▀
-
+                                              ░░░░░░░░░░░░░░░░░░░░░░█████████░░░░░░░░░
+                                              ░░███████░░░░░░░░░░███▒▒▒▒▒▒▒▒███░░░░░░░
+                                              ░░█▒▒▒▒▒▒█░░░░░░░███▒▒▒▒▒▒▒▒▒▒▒▒▒███░░░░
+                                              ░░░█▒▒▒▒▒▒█░░░░██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██░░
+                                              ░░░░█▒▒▒▒▒█░░░██▒▒▒▒▒██▒▒▒▒▒▒██▒▒▒▒▒███░
+                             SALVE            ░░░░░█▒▒▒█░░░█▒▒▒▒▒▒████▒▒▒▒████▒▒▒▒▒▒██
+                               DO             ░░░█████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██
+                              DEGE            ░░░█▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒▒▒▒▒▒██
+                                              ░██▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒██▒▒▒▒▒▒▒▒▒▒██▒▒▒▒██
+                                              ██▒▒▒███████████▒▒▒▒▒██▒▒▒▒▒▒▒▒██▒▒▒▒▒██
+                                              █▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒████████▒▒▒▒▒▒▒██
+                                              ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██░
+                                              ░█▒▒▒███████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██░░░
+                                              ░██▒▒▒▒▒▒▒▒▒▒████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█░░░░░
+                                              ░░████████████░░░█████████████████░░░░░░
     */
 
-    document.getElementById('download').addEventListener('click', async () => {
-      document.querySelectorAll('.buttons, .remove-btn, .color-controls').forEach(el => el.classList.add('hide-during-screenshot'));
-
-      const wm = document.createElement('div');
-      wm.className = 'wd-watermark';
-      wm.textContent = 'Feito no site do DEGE :3';
-      resultsContainer.appendChild(wm);
-
-      try {
-        const canvas = await html2canvas(document.getElementById('capture-area'), {
-          useCORS: true,
-          backgroundColor: null,
-          scale: 2,
-          allowTaint: false
-        });
-        const link = document.createElement('a');
-        link.download = 'resultado.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      } catch (err) {
-        console.error('Erro ao gerar imagem:', err);
-        alert('Falha ao gerar imagem. Se você usou imagem de fundo muito grande, tente usar uma menor.');
-      } finally {
-        wm.remove();
-        document.querySelectorAll('.buttons, .remove-btn, .color-controls').forEach(el => el.classList.remove('hide-during-screenshot'));
-      }
+    document.body.addEventListener('input',e=>{
+      if(e.target.matches('.percent,.name,#editable-title')){updateBars();saveData();}
+    });
+    document.body.addEventListener('click',e=>{
+      if(e.target.classList.contains('remove-btn')){e.target.parentElement.remove();saveData();}
     });
 
+    // Cores
+    [bgColor,containerColor,titleColor,textColor].forEach(el=>{
+      el.addEventListener('input',()=>{
+        document.body.style.backgroundColor=bgColor.value;
+        resultsContainer.style.backgroundColor=containerColor.value;
+        titleEl.style.color=titleColor.value;
+        document.querySelectorAll('.name,.percent').forEach(e=>e.style.color=textColor.value);
+        saveData();
+      });
+    });
+
+    // Fontes
+    function applyFonts(){
+      titleEl.style.fontFamily=titleFontSel.value;
+      titleEl.style.fontWeight=titleBold.checked?'bold':'normal';
+      titleEl.style.fontStyle=titleItalic.checked?'italic':'normal';
+      titleEl.style.textShadow=`1px 1px 2px ${titleShadow.value}`;
+
+      document.querySelectorAll('.name,.percent').forEach(el=>{
+        el.style.fontFamily=inputFontSel.value;
+        el.style.fontWeight=inputBold.checked?'bold':'normal';
+        el.style.fontStyle=inputItalic.checked?'italic':'normal';
+        el.style.textShadow=`1px 1px 2px ${inputShadow.value}`;
+      });
+      saveData();
+    }
+
+    [titleFontSel,titleBold,titleItalic,titleShadow,
+     inputFontSel,inputBold,inputItalic,inputShadow]
+     .forEach(el=>el.addEventListener('input',applyFonts));
+
+    // Botões principais
+    document.getElementById('addLine').onclick=()=>{createLine('0%','Novo item');saveData();}
+    document.getElementById('resetData').onclick=()=>{localStorage.removeItem('degeneradoData');loadData();}
+    document.getElementById('resetColors').onclick=()=>{bgColor.value="#111111";containerColor.value="#000000";titleColor.value="#eeeeee";textColor.value="#ffffff";applyFonts();loadData();}
+    document.getElementById('resetAll').onclick=()=>{localStorage.clear();loadData();}
+
+    // Randomizações
+    const genRandomArray=l=>Array.from({length:l},()=>Math.floor(Math.random()*101));
+    document.getElementById('randomize').onclick=()=>{
+      document.querySelectorAll('.result').forEach(r=>{
+        r.querySelector('.percent').textContent=Math.floor(Math.random()*101)+'%';
+      });updateBars();saveData();
+    }
+    document.getElementById('ascending').onclick=()=>{
+      const items=[...document.querySelectorAll('.result')];
+      const vals=genRandomArray(items.length).sort((a,b)=>a-b);
+      items.forEach((r,i)=>r.querySelector('.percent').textContent=vals[i]+'%');
+      updateBars();saveData();
+    }
+    document.getElementById('descending').onclick=()=>{
+      const items=[...document.querySelectorAll('.result')];
+      const vals=genRandomArray(items.length).sort((a,b)=>b-a);
+      items.forEach((r,i)=>r.querySelector('.percent').textContent=vals[i]+'%');
+      updateBars();saveData();
+    }
+    document.getElementById('shuffleNames').onclick=()=>{
+      const names=[...document.querySelectorAll('.name')].map(n=>n.textContent);
+      for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
+      document.querySelectorAll('.name').forEach((n,i)=>n.textContent=names[i]);
+      saveData();
+    }
+
+    // Imagem
+    document.getElementById('bgImageInput').addEventListener('change',ev=>{
+      const f=ev.target.files[0];if(!f)return;
+      const r=new FileReader();
+      r.onload=e=>{resultsContainer.style.backgroundImage=`url('${e.target.result}')`;};
+      r.readAsDataURL(f);
+    });
+    document.getElementById('removeImage').onclick=()=>resultsContainer.style.backgroundImage='';
+
+    // Download
+    document.getElementById('download').onclick=async()=>{
+      document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el=>el.classList.add('hide-during-screenshot'));
+      const wm=document.createElement('div');
+      wm.className='wd-watermark';wm.textContent='Feito no site do DEGE :3';resultsContainer.appendChild(wm);
+      const canvas=await html2canvas(document.getElementById('capture-area'),{scale:2,backgroundColor:null});
+      const a=document.createElement('a');a.download='resultado.png';a.href=canvas.toDataURL();a.click();
+      wm.remove();
+      document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el=>el.classList.remove('hide-during-screenshot'));
+    }
+
     loadData();
-    setTimeout(syncColorInputs, 120);
   </script>
 </body>
 </html>
-
