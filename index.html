@@ -437,15 +437,51 @@
     document.getElementById('removeImage').onclick=()=>resultsContainer.style.backgroundImage='';
 
     // Download
-    document.getElementById('download').onclick=async()=>{
-      document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el=>el.classList.add('hide-during-screenshot'));
-      const wm=document.createElement('div');
-      wm.className='wd-watermark';wm.textContent='Feito no site do DEGE :3';resultsContainer.appendChild(wm);
-      const canvas=await html2canvas(document.getElementById('capture-area'),{scale:2,backgroundColor:null});
-      const a=document.createElement('a');a.download='resultado.png';a.href=canvas.toDataURL();a.click();
-      wm.remove();
-      document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el=>el.classList.remove('hide-during-screenshot'));
-    }
+    document.getElementById('download').onclick = async () => {
+  // Esconde botões e controles
+  document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el => el.classList.add('hide-during-screenshot'));
+
+  // Marca d'água temporária
+  const wm = document.createElement('div');
+  wm.className = 'wd-watermark';
+  wm.textContent = 'Feito no site do DEGE :3';
+  resultsContainer.appendChild(wm);
+
+  // Pergunta o tamanho ao usuário
+  const sizeInput = prompt("Digite o tamanho da imagem (ex: 500x500) ou deixe em branco para automático:");
+  let width, height;
+  if (sizeInput && sizeInput.includes('x')) {
+    [width, height] = sizeInput.split('x').map(n => parseInt(n.trim()) || null);
+  }
+
+  // Captura a área
+  const originalCanvas = await html2canvas(document.getElementById('capture-area'), {
+    scale: 2,
+    backgroundColor: null
+  });
+
+  // Se o usuário digitou algo válido, redimensiona
+  let finalCanvas = originalCanvas;
+  if (width && height) {
+    const resizedCanvas = document.createElement('canvas');
+    resizedCanvas.width = width;
+    resizedCanvas.height = height;
+    const ctx = resizedCanvas.getContext('2d');
+    ctx.drawImage(originalCanvas, 0, 0, width, height);
+    finalCanvas = resizedCanvas;
+  }
+
+  // Faz o download
+  const a = document.createElement('a');
+  a.download = 'resultado.png';
+  a.href = finalCanvas.toDataURL();
+  a.click();
+
+  // Limpa
+  wm.remove();
+  document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el => el.classList.remove('hide-during-screenshot'));
+};
+
 
     loadData();
   </script>
