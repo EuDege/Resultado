@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <title>Resultado</title>
@@ -10,7 +11,12 @@
       --text: #fff;
       --title: #eee;
     }
-    html, body { height: 100% }
+
+    html,
+    body {
+      height: 100%
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
@@ -22,14 +28,16 @@
       transition: background-color 0.25s, color 0.25s;
     }
 
-    #capture-area { position: relative; }
+    #capture-area {
+      position: relative;
+    }
 
     .result-container {
       width: 500px;
       background: var(--container-rgba);
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -44,7 +52,7 @@
       outline: none;
       text-align: center;
       transition: color 0.3s;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
     }
 
     .result {
@@ -64,7 +72,7 @@
     .bar {
       flex: 1;
       height: 8px;
-      background-color: rgba(0,0,0,0.35);
+      background-color: rgba(0, 0, 0, 0.35);
       border-radius: 4px;
       overflow: hidden;
     }
@@ -82,7 +90,7 @@
       width: 165px;
       text-align: left;
       cursor: text;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
       min-height: 18px;
     }
 
@@ -95,7 +103,10 @@
       font-weight: bold;
       padding: 0 6px;
     }
-    .remove-btn:hover { color: #ff7777 }
+
+    .remove-btn:hover {
+      color: #ff7777
+    }
 
     .section {
       background: #1b1b1b;
@@ -136,7 +147,8 @@
       justify-content: center;
     }
 
-    .buttons button, .buttons label {
+    .buttons button,
+    .buttons label {
       background-color: #222;
       color: #fff;
       border: 1px solid #555;
@@ -145,10 +157,21 @@
       cursor: pointer;
       font-size: 13px;
     }
-    .buttons button:hover { background: #333 }
 
-    input[type="file"] { display: none }
-    input[type="color"] { width: 36px; height: 26px; padding: 0; border: none; }
+    .buttons button:hover {
+      background: #333
+    }
+
+    input[type="file"] {
+      display: none
+    }
+
+    input[type="color"] {
+      width: 36px;
+      height: 26px;
+      padding: 0;
+      border: none;
+    }
 
     #download {
       background: #1ed760;
@@ -160,22 +183,28 @@
       border-radius: 8px;
       margin-top: 25px;
     }
-    #download:hover { background: #29f07d }
+
+    #download:hover {
+      background: #29f07d
+    }
 
     .wd-watermark {
       position: absolute;
       right: 10px;
       bottom: 8px;
-      font-size: 13px;
+      font-size: 25px;
       opacity: 0.45;
       color: #fff;
       pointer-events: none;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
     }
 
-    .hide-during-screenshot { display: none !important }
+    .hide-during-screenshot {
+      display: none !important
+    }
   </style>
 </head>
+
 <body>
   <div id="capture-area">
     <div class="result-container" id="results-container">
@@ -272,16 +301,16 @@
 
     const DEFAULT = {
       title: 'Resultado de [seu nick]',
-      lines: Array.from({length:10}, (_,i)=>({
-        percent:`${(i+1)*10}%`,
-        name:`Item ${i+1}`
+      lines: Array.from({ length: 10 }, (_, i) => ({
+        percent: `${(i + 1) * 10}%`,
+        name: `Item ${i + 1}`
       }))
     };
 
-    function createLine(percent='0%', name='Item'){
-      const div=document.createElement('div');
-      div.className='result';
-      div.innerHTML=`
+    function createLine(percent = '0%', name = 'Item') {
+      const div = document.createElement('div');
+      div.className = 'result';
+      div.innerHTML = `
         <div class="percent" contenteditable="true">${percent}</div>
         <div class="bar"><div class="fill"></div></div>
         <div class="name" contenteditable="true">${name}</div>
@@ -291,50 +320,50 @@
       updateBars();
     }
 
-    function updateBars(){
-      document.querySelectorAll('.result').forEach(r=>{
-        const p=r.querySelector('.percent');
-        const fill=r.querySelector('.fill');
-        let val=parseInt(p.textContent.replace('%',''))||0;
-        val=Math.max(0,Math.min(100,val));
-        fill.style.width=val+'%';
-        fill.style.background= val>80?'limegreen':val>60?'yellowgreen':val>40?'orange':val>20?'orangered':'red';
-        p.textContent=val+'%';
+    function updateBars() {
+      document.querySelectorAll('.result').forEach(r => {
+        const p = r.querySelector('.percent');
+        const fill = r.querySelector('.fill');
+        let val = parseInt(p.textContent.replace('%', '')) || 0;
+        val = Math.max(0, Math.min(100, val));
+        fill.style.width = val + '%';
+        fill.style.background = val > 80 ? 'limegreen' : val > 60 ? 'yellowgreen' : val > 40 ? 'orange' : val > 20 ? 'orangered' : 'red';
+        p.textContent = val + '%';
       });
     }
 
-    function saveData(){
-      const data={
-        title:titleEl.textContent,
-        lines:[...document.querySelectorAll('.result')].map(r=>({
-          percent:r.querySelector('.percent').textContent,
-          name:r.querySelector('.name').textContent
+    function saveData() {
+      const data = {
+        title: titleEl.textContent,
+        lines: [...document.querySelectorAll('.result')].map(r => ({
+          percent: r.querySelector('.percent').textContent,
+          name: r.querySelector('.name').textContent
         })),
-        bg:bgColor.value,
-        container:containerColor.value,
-        titleColor:titleColor.value,
-        textColor:textColor.value
+        bg: bgColor.value,
+        container: containerColor.value,
+        titleColor: titleColor.value,
+        textColor: textColor.value
       };
-      localStorage.setItem('degeneradoData',JSON.stringify(data));
+      localStorage.setItem('degeneradoData', JSON.stringify(data));
     }
 
-    function loadData(){
-      resultsEl.innerHTML='';
-      const raw=localStorage.getItem('degeneradoData');
+    function loadData() {
+      resultsEl.innerHTML = '';
+      const raw = localStorage.getItem('degeneradoData');
       let data;
-      try{data=raw?JSON.parse(raw):DEFAULT}catch{data=DEFAULT}
-      titleEl.textContent=data.title||DEFAULT.title;
-      (data.lines||DEFAULT.lines).forEach(l=>createLine(l.percent,l.name));
+      try { data = raw ? JSON.parse(raw) : DEFAULT } catch { data = DEFAULT }
+      titleEl.textContent = data.title || DEFAULT.title;
+      (data.lines || DEFAULT.lines).forEach(l => createLine(l.percent, l.name));
 
-      bgColor.value=data.bg||"#111111";
-      containerColor.value=data.container||"#000000";
-      titleColor.value=data.titleColor||"#eeeeee";
-      textColor.value=data.textColor||"#ffffff";
+      bgColor.value = data.bg || "#111111";
+      containerColor.value = data.container || "#000000";
+      titleColor.value = data.titleColor || "#eeeeee";
+      textColor.value = data.textColor || "#ffffff";
 
-      document.body.style.backgroundColor=bgColor.value;
-      resultsContainer.style.backgroundColor=containerColor.value;
-      titleEl.style.color=titleColor.value;
-      document.querySelectorAll('.name,.percent').forEach(e=>e.style.color=textColor.value);
+      document.body.style.backgroundColor = bgColor.value;
+      resultsContainer.style.backgroundColor = containerColor.value;
+      titleEl.style.color = titleColor.value;
+      document.querySelectorAll('.name,.percent').forEach(e => e.style.color = textColor.value);
 
       updateBars();
     }
@@ -357,133 +386,134 @@
                                               ░░████████████░░░█████████████████░░░░░░
     */
 
-    document.body.addEventListener('input',e=>{
-      if(e.target.matches('.percent,.name,#editable-title')){updateBars();saveData();}
+    document.body.addEventListener('input', e => {
+      if (e.target.matches('.percent,.name,#editable-title')) { updateBars(); saveData(); }
     });
-    document.body.addEventListener('click',e=>{
-      if(e.target.classList.contains('remove-btn')){e.target.parentElement.remove();saveData();}
+    document.body.addEventListener('click', e => {
+      if (e.target.classList.contains('remove-btn')) { e.target.parentElement.remove(); saveData(); }
     });
 
     // Cores
-    [bgColor,containerColor,titleColor,textColor].forEach(el=>{
-      el.addEventListener('input',()=>{
-        document.body.style.backgroundColor=bgColor.value;
-        resultsContainer.style.backgroundColor=containerColor.value;
-        titleEl.style.color=titleColor.value;
-        document.querySelectorAll('.name,.percent').forEach(e=>e.style.color=textColor.value);
+    [bgColor, containerColor, titleColor, textColor].forEach(el => {
+      el.addEventListener('input', () => {
+        document.body.style.backgroundColor = bgColor.value;
+        resultsContainer.style.backgroundColor = containerColor.value;
+        titleEl.style.color = titleColor.value;
+        document.querySelectorAll('.name,.percent').forEach(e => e.style.color = textColor.value);
         saveData();
       });
     });
 
     // Fontes
-    function applyFonts(){
-      titleEl.style.fontFamily=titleFontSel.value;
-      titleEl.style.fontWeight=titleBold.checked?'bold':'normal';
-      titleEl.style.fontStyle=titleItalic.checked?'italic':'normal';
-      titleEl.style.textShadow=`1px 1px 2px ${titleShadow.value}`;
+    function applyFonts() {
+      titleEl.style.fontFamily = titleFontSel.value;
+      titleEl.style.fontWeight = titleBold.checked ? 'bold' : 'normal';
+      titleEl.style.fontStyle = titleItalic.checked ? 'italic' : 'normal';
+      titleEl.style.textShadow = `1px 1px 2px ${titleShadow.value}`;
 
-      document.querySelectorAll('.name,.percent').forEach(el=>{
-        el.style.fontFamily=inputFontSel.value;
-        el.style.fontWeight=inputBold.checked?'bold':'normal';
-        el.style.fontStyle=inputItalic.checked?'italic':'normal';
-        el.style.textShadow=`1px 1px 2px ${inputShadow.value}`;
+      document.querySelectorAll('.name,.percent').forEach(el => {
+        el.style.fontFamily = inputFontSel.value;
+        el.style.fontWeight = inputBold.checked ? 'bold' : 'normal';
+        el.style.fontStyle = inputItalic.checked ? 'italic' : 'normal';
+        el.style.textShadow = `1px 1px 2px ${inputShadow.value}`;
       });
       saveData();
     }
 
-    [titleFontSel,titleBold,titleItalic,titleShadow,
-     inputFontSel,inputBold,inputItalic,inputShadow]
-     .forEach(el=>el.addEventListener('input',applyFonts));
+    [titleFontSel, titleBold, titleItalic, titleShadow,
+      inputFontSel, inputBold, inputItalic, inputShadow]
+      .forEach(el => el.addEventListener('input', applyFonts));
 
     // Botões principais
-    document.getElementById('addLine').onclick=()=>{createLine('0%','Novo item');saveData();}
-    document.getElementById('resetData').onclick=()=>{localStorage.removeItem('degeneradoData');loadData();}
-    document.getElementById('resetColors').onclick=()=>{bgColor.value="#111111";containerColor.value="#000000";titleColor.value="#eeeeee";textColor.value="#ffffff";applyFonts();loadData();}
-    document.getElementById('resetAll').onclick=()=>{localStorage.clear();loadData();}
+    document.getElementById('addLine').onclick = () => { createLine('0%', 'Novo item'); saveData(); }
+    document.getElementById('resetData').onclick = () => { localStorage.removeItem('degeneradoData'); loadData(); }
+    document.getElementById('resetColors').onclick = () => { bgColor.value = "#111111"; containerColor.value = "#000000"; titleColor.value = "#eeeeee"; textColor.value = "#ffffff"; applyFonts(); loadData(); }
+    document.getElementById('resetAll').onclick = () => { localStorage.clear(); loadData(); }
 
     // Randomizações
-    const genRandomArray=l=>Array.from({length:l},()=>Math.floor(Math.random()*101));
-    document.getElementById('randomize').onclick=()=>{
-      document.querySelectorAll('.result').forEach(r=>{
-        r.querySelector('.percent').textContent=Math.floor(Math.random()*101)+'%';
-      });updateBars();saveData();
+    const genRandomArray = l => Array.from({ length: l }, () => Math.floor(Math.random() * 101));
+    document.getElementById('randomize').onclick = () => {
+      document.querySelectorAll('.result').forEach(r => {
+        r.querySelector('.percent').textContent = Math.floor(Math.random() * 101) + '%';
+      }); updateBars(); saveData();
     }
-    document.getElementById('ascending').onclick=()=>{
-      const items=[...document.querySelectorAll('.result')];
-      const vals=genRandomArray(items.length).sort((a,b)=>a-b);
-      items.forEach((r,i)=>r.querySelector('.percent').textContent=vals[i]+'%');
-      updateBars();saveData();
+    document.getElementById('ascending').onclick = () => {
+      const items = [...document.querySelectorAll('.result')];
+      const vals = genRandomArray(items.length).sort((a, b) => a - b);
+      items.forEach((r, i) => r.querySelector('.percent').textContent = vals[i] + '%');
+      updateBars(); saveData();
     }
-    document.getElementById('descending').onclick=()=>{
-      const items=[...document.querySelectorAll('.result')];
-      const vals=genRandomArray(items.length).sort((a,b)=>b-a);
-      items.forEach((r,i)=>r.querySelector('.percent').textContent=vals[i]+'%');
-      updateBars();saveData();
+    document.getElementById('descending').onclick = () => {
+      const items = [...document.querySelectorAll('.result')];
+      const vals = genRandomArray(items.length).sort((a, b) => b - a);
+      items.forEach((r, i) => r.querySelector('.percent').textContent = vals[i] + '%');
+      updateBars(); saveData();
     }
-    document.getElementById('shuffleNames').onclick=()=>{
-      const names=[...document.querySelectorAll('.name')].map(n=>n.textContent);
-      for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
-      document.querySelectorAll('.name').forEach((n,i)=>n.textContent=names[i]);
+    document.getElementById('shuffleNames').onclick = () => {
+      const names = [...document.querySelectorAll('.name')].map(n => n.textContent);
+      for (let i = names.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[names[i], names[j]] = [names[j], names[i]]; }
+      document.querySelectorAll('.name').forEach((n, i) => n.textContent = names[i]);
       saveData();
     }
 
     // Imagem
-    document.getElementById('bgImageInput').addEventListener('change',ev=>{
-      const f=ev.target.files[0];if(!f)return;
-      const r=new FileReader();
-      r.onload=e=>{resultsContainer.style.backgroundImage=`url('${e.target.result}')`;};
+    document.getElementById('bgImageInput').addEventListener('change', ev => {
+      const f = ev.target.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = e => { resultsContainer.style.backgroundImage = `url('${e.target.result}')`; };
       r.readAsDataURL(f);
     });
-    document.getElementById('removeImage').onclick=()=>resultsContainer.style.backgroundImage='';
+    document.getElementById('removeImage').onclick = () => resultsContainer.style.backgroundImage = '';
 
     // Download
     document.getElementById('download').onclick = async () => {
-  // Esconde botões e controles
-  document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el => el.classList.add('hide-during-screenshot'));
+      // Esconde botões e controles
+      document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el => el.classList.add('hide-during-screenshot'));
 
-  // Marca d'água temporária
-  const wm = document.createElement('div');
-  wm.className = 'wd-watermark';
-  wm.textContent = 'Feito no site do DEGE :3';
-  resultsContainer.appendChild(wm);
+      // Marca d'água temporária
+      const wm = document.createElement('div');
+      wm.className = 'wd-watermark';
+      wm.textContent = 'Feito no site do DEGE :3';
+      resultsContainer.appendChild(wm);
 
-  // Pergunta o tamanho ao usuário
-  const sizeInput = prompt("Digite o tamanho da imagem (ex: 500x500) ou deixe em branco para automático:");
-  let width, height;
-  if (sizeInput && sizeInput.includes('x')) {
-    [width, height] = sizeInput.split('x').map(n => parseInt(n.trim()) || null);
-  }
+      // Pergunta o tamanho ao usuário
+      const sizeInput = prompt("Digite o tamanho da imagem (ex: 500x500) ou deixe em branco para automático:");
+      let width, height;
+      if (sizeInput && sizeInput.includes('x')) {
+        [width, height] = sizeInput.split('x').map(n => parseInt(n.trim()) || null);
+      }
 
-  // Captura a área
-  const originalCanvas = await html2canvas(document.getElementById('capture-area'), {
-    scale: 2,
-    backgroundColor: null
-  });
+      // Captura a área
+      const originalCanvas = await html2canvas(document.getElementById('capture-area'), {
+        scale: 2,
+        backgroundColor: null
+      });
 
-  // Se o usuário digitou algo válido, redimensiona
-  let finalCanvas = originalCanvas;
-  if (width && height) {
-    const resizedCanvas = document.createElement('canvas');
-    resizedCanvas.width = width;
-    resizedCanvas.height = height;
-    const ctx = resizedCanvas.getContext('2d');
-    ctx.drawImage(originalCanvas, 0, 0, width, height);
-    finalCanvas = resizedCanvas;
-  }
+      // Se o usuário digitou algo válido, redimensiona
+      let finalCanvas = originalCanvas;
+      if (width && height) {
+        const resizedCanvas = document.createElement('canvas');
+        resizedCanvas.width = width;
+        resizedCanvas.height = height;
+        const ctx = resizedCanvas.getContext('2d');
+        ctx.drawImage(originalCanvas, 0, 0, width, height);
+        finalCanvas = resizedCanvas;
+      }
 
-  // Faz o download
-  const a = document.createElement('a');
-  a.download = 'resultado.png';
-  a.href = finalCanvas.toDataURL();
-  a.click();
+      // Faz o download
+      const a = document.createElement('a');
+      a.download = 'resultado.png';
+      a.href = finalCanvas.toDataURL();
+      a.click();
 
-  // Limpa
-  wm.remove();
-  document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el => el.classList.remove('hide-during-screenshot'));
-};
+      // Limpa
+      wm.remove();
+      document.querySelectorAll('.buttons,.section,.remove-btn').forEach(el => el.classList.remove('hide-during-screenshot'));
+    };
 
 
     loadData();
   </script>
 </body>
+
 </html>
